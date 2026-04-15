@@ -1,29 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// --- MODELO ---
 public class ItemEstoque
+{
+    public int Id { get; set; }
+    public string Nome { get; set; }
+    public int Quantidade { get; set; }
+}
+
+// --- SERVIÇO DE ESTOQUE ---
+public class EstoqueService
+{
+    private List<ItemEstoque> _estoque = new List<ItemEstoque>();
+
+    // TAREFA: Inserir itens
+    public void AdicionarItem(ItemEstoque item)
     {
-        public int Id { get; set; }
-        public string Nome { get; set; }
-        public int Quantidade { get; set; }
+        _estoque.Add(item);
     }
 
-    public class EstoqueService
+    // TAREFA: Criar método de baixa de estoque
+    // DESAFIO: Impedir estoque negativo
+    public void DarBaixa(int id, int quantidadeParaRetirar)
     {
-        private List<ItemEstoque> _itens = new List<ItemEstoque>();
+        var item = _estoque.FirstOrDefault(i => i.Id == id);
 
-        public void Inserir(ItemEstoque item) => _itens.Add(item);
-
-        public void BaixaEstoque(int id, int qtd)
+        if (item == null)
         {
-            var item = _itens.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                // Desafio: Impedir estoque negativo
-                if (item.Quantidade - qtd < 0)
-                    Console.WriteLine($"Erro: Estoque insuficiente para {item.Nome}.");
-                else
-                    item.Quantidade -= qtd;
-            }
+            Console.WriteLine($"[ERRO] Item com ID {id} não encontrado.");
+            return;
         }
 
-        public List<ItemEstoque> ListarEstoqueBaixo(int limite) 
-            => _itens.Where(i => i.Quantidade < limite).ToList();
+        if (item.Quantidade < quantidadeParaRetirar)
+        {
+            Console.WriteLine($"[BLOQUEADO] Baixa de {quantidadeParaRetirar} un. impossível para '{item.Nome}'. Estoque atual: {item.Quantidade}.");
+        }
+        else
+        {
+            item.Quantidade -= quantidadeParaRetirar;
+            Console.WriteLine($"[SUCESSO] Baixa de {quantidadeParaRetirar} un. realizada para '{item.Nome}'. Novo saldo: {item.Quantidade}.");
+        }
     }
+
+    // TAREFA: Listar estoque baixo (ex: itens com menos de 5 unidades)
+    public List<ItemEstoque> ListarEstoqueBaixo(int limite)
+    {
+        return _estoque.Where(i => i.Quantidade < limite).ToList();
+    }
+
+    public List<ItemEstoque> ListarTodos() => _estoque;
+}
+
+// --- EXECUÇÃO (MAIN) ---
+class Program
+{
+    static void Main()
+    {
+        var service = new EstoqueService();
+
+        // 1. Inserindo itens
+        service.AdicionarItem(new ItemEstoque { Id = 1, Nome = "Caderno", Quantidade = 15 });
+        service.AdicionarItem(new ItemEstoque { Id = 2, Nome = "Lápis", Quantidade = 3 });
+        service.AdicionarItem(new ItemEstoque { Id = 3, Nome = "Borracha", Quantidade = 20 });
+
+        // 2. Testando baixa de estoque e o DESAFIO (impedir negativo)
+        Console.WriteLine("--- Movimentação de Estoque ---");
+        service.DarBaixa(1, 5);  // Deve funcionar (sobra 10)
+        service.DarBaixa(2, 10); // Deve ser bloqueado (só tem 3)
+
+        // 3. Listar estoque baixo
+        Console.WriteLine("\n--- Relatório: Estoque Baixo (Limite: 5) ---");
+        var baixoEstoque = service.ListarEstoqueBaixo(5);
+        
+        if (baixoEstoque.Count == 0)
+        {
+            Console.WriteLine("Tudo em ordem no estoque.");
+        }
+        else
+        {
+            foreach (var i in baixoEstoque)
+            {
+                Console.WriteLine($"ALERTA: {i.Nome} possui apenas {i.Quantidade} unidades!");
+            }
+        }
+    }
+}
