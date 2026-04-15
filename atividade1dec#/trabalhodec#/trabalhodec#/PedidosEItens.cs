@@ -2,35 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// --- MODELO ---
-public class Curso
+// --- MODELOS ---
+public class Pedido
 {
     public int Id { get; set; }
-    public string Nome { get; set; }
-    public int CargaHoraria { get; set; }
+    public DateTime Data { get; set; }
+    // Inicializar a lista para evitar NullReferenceException
+    public List<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
+
+    // DESAFIO: Método para calcular o total de itens (soma das quantidades)
+    public int CalcularTotalDeItens()
+    {
+        return Itens.Sum(item => item.Quantidade);
+    }
 }
 
-// --- SERVIÇO / LÓGICA ---
-public class CursoService
+public class ItemPedido
 {
-    private List<Curso> _cursos = new List<Curso>();
+    public int Id { get; set; }
+    public string Produto { get; set; }
+    public int Quantidade { get; set; }
+    public int PedidoId { get; set; }
+    public Pedido Pedido { get; set; }
+}
 
-    // TAREFA: Inserir cursos
-    public void Adicionar(Curso curso) => _cursos.Add(curso);
+// --- REPOSITÓRIO / SERVIÇO ---
+public class PedidoService
+{
+    private List<Pedido> _pedidos = new List<Pedido>();
 
-    // TAREFA: Filtrar por carga horária (Exemplo: cursos com mais de 40h)
-    public List<Curso> FiltrarPorCargaHoraria(int minima)
+    // TAREFA: Inserir pedido com itens
+    public void AdicionarPedido(Pedido pedido)
     {
-        return _cursos.Where(c => c.CargaHoraria >= minima).ToList();
+        _pedidos.Add(pedido);
     }
 
-    // TAREFA: Ordenar por nome
-    public List<Curso> ListarOrdenadoPorNome()
+    // TAREFA: Listar pedidos com itens
+    public List<Pedido> ListarTodos()
     {
-        return _cursos.OrderBy(c => c.Nome).ToList();
+        return _pedidos;
     }
-
-    public List<Curso> ListarTodos() => _cursos;
 }
 
 // --- EXECUÇÃO (MAIN) ---
@@ -38,29 +49,40 @@ class Program
 {
     static void Main()
     {
-        var service = new CursoService();
+        var service = new PedidoService();
 
-        // TAREFA: Inserir 5 cursos
-        service.Adicionar(new Curso { Id = 1, Nome = "Desenvolvimento C#", CargaHoraria = 80 });
-        service.Adicionar(new Curso { Id = 2, Nome = "Banco de Dados SQL", CargaHoraria = 40 });
-        service.Adicionar(new Curso { Id = 3, Nome = "Lógica de Programação", CargaHoraria = 20 });
-        service.Adicionar(new Curso { Id = 4, Nome = "Arquitetura de Sistemas", CargaHoraria = 60 });
-        service.Adicionar(new Curso { Id = 5, Nome = "UI/UX Design", CargaHoraria = 30 });
+        // 1. Criando um novo pedido
+        var pedido1 = new Pedido 
+        { 
+            Id = 1, 
+            Data = DateTime.Now 
+        };
 
-        // TAREFA: Ordenar por nome e exibir
-        Console.WriteLine("--- Todos os Cursos (Ordenados por Nome) ---");
-        var ordenados = service.ListarOrdenadoPorNome();
-        foreach (var c in ordenados)
+        // 2. TAREFA: Inserir pedido com itens
+        // Adicionando os itens e configurando a referência de volta para o pedido
+        pedido1.Itens.Add(new ItemPedido { Id = 10, Produto = "Cerveja Artesanal", Quantidade = 6, Pedido = pedido1 });
+        pedido1.Itens.Add(new ItemPedido { Id = 11, Produto = "Carvão 5kg", Quantidade = 2, Pedido = pedido1 });
+        pedido1.Itens.Add(new ItemPedido { Id = 12, Produto = "Picanha", Quantidade = 1, Pedido = pedido1 });
+
+        service.AdicionarPedido(pedido1);
+
+        // 3. TAREFA: Listar pedidos com itens
+        var todosOsPedidos = service.ListarTodos();
+
+        Console.WriteLine("=== RELATÓRIO DE PEDIDOS ===");
+        foreach (var p in todosOsPedidos)
         {
-            Console.WriteLine($"ID: {c.Id} | Nome: {c.Nome} | Carga: {c.CargaHoraria}h");
-        }
+            Console.WriteLine($"Pedido ID: {p.Id} | Data: {p.Data:dd/MM/yyyy HH:mm}");
+            Console.WriteLine("Itens do Pedido:");
+            
+            foreach (var item in p.Itens)
+            {
+                Console.WriteLine($"  - {item.Produto} (Qtd: {item.Quantidade})");
+            }
 
-        // TAREFA: Filtrar por carga horária (ex: >= 40h)
-        Console.WriteLine("\n--- Cursos com Carga Horária >= 40h ---");
-        var filtrados = service.FiltrarPorCargaHoraria(40);
-        foreach (var c in filtrados)
-        {
-            Console.WriteLine($"- {c.Nome} ({c.CargaHoraria}h)");
+            // 4. DESAFIO: Exibir o total de itens calculado
+            Console.WriteLine($"TOTAL DE ITENS NESTE PEDIDO: {p.CalcularTotalDeItens()}");
+            Console.WriteLine(new string('-', 30));
         }
     }
 }
