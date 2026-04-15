@@ -1,29 +1,23 @@
-public class ItemEstoque
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AtividadesCSharp
+{
+    public class Produto
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public int Quantidade { get; set; }
+        public double Preco { get; set; }
     }
 
-    public class EstoqueService
+    public class ProdutoService
     {
-        private List<ItemEstoque> _itens = new List<ItemEstoque>();
+        private List<Produto> _produtos = new List<Produto>();
 
-        public void Inserir(ItemEstoque item) => _itens.Add(item);
-
-        public void BaixaEstoque(int id, int qtd)
-        {
-            var item = _itens.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                // Desafio: Impedir estoque negativo
-                if (item.Quantidade - qtd < 0)
-                    Console.WriteLine($"Erro: Estoque insuficiente para {item.Nome}.");
-                else
-                    item.Quantidade -= qtd;
-            }
-        }
-
-        public List<ItemEstoque> ListarEstoqueBaixo(int limite) 
-            => _itens.Where(i => i.Quantidade < limite).ToList();
+        public void Criar(Produto p) => _produtos.Add(p);
+        public List<Produto> ListarTodos() => _produtos;
+        
+        public List<Produto> ListarAcimaDe(double valorMinimo) 
+            => _produtos.Where(p => p.Preco > valorMinimo).ToList();
     }
