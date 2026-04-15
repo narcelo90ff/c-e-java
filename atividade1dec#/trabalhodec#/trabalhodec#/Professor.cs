@@ -1,26 +1,84 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
+// --- MODELOS ---
 public class Professor
+{
+    public int Id { get; set; }
+    public string Nome { get; set; }
+    // Um Professor tem muitos Cursos (1:N)
+    public List<Curso> Cursos { get; set; } = new List<Curso>();
+}
+
+public class Curso
+{
+    public int Id { get; set; }
+    public string Nome { get; set; }
+    public int ProfessorId { get; set; }
+    // Propriedade de Navegação
+    public Professor Professor { get; set; }
+}
+
+// --- SERVIÇO / LÓGICA ---
+public class InstituicaoService
+{
+    private List<Professor> _professores = new List<Professor>();
+
+    // TAREFA: Inserir professor com cursos
+    public void CadastrarProfessor(Professor prof)
     {
-        public int Id { get; set; }
-        public string Nome { get; set; }
-        public List<CursoN> Cursos { get; set; } = new List<CursoN>();
+        _professores.Add(prof);
     }
 
-    public class CursoN
+    // TAREFA: Listar com Include (Simulação)
+    // Retornamos a lista onde os objetos internos já estão relacionados
+    public List<Professor> ListarProfessoresComCursos()
     {
-        public int Id { get; set; }
-        public string Nome { get; set; }
-        public int ProfessorId { get; set; }
-        public Professor Professor { get; set; }
+        return _professores;
     }
+}
 
-    // --- ATIVIDADE 6: PEDIDO E ITENS (1:N) ---
-    public class Pedido
+// --- EXECUÇÃO (MAIN) ---
+class Program
+{
+    static void Main()
     {
-        public int Id { get; set; }
-        public DateTime Data { get; set; }
-        public List<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
+        var service = new InstituicaoService();
 
-        // Desafio: Calcular total de itens
-        public int CalcularTotalItens() => Itens.Sum(i => i.Quantidade);
+        // 1. Configurar relacionamento e Inserir
+        var prof1 = new Professor { Id = 1, Nome = "Dr. Hans Chucrute" };
+        
+        // Criando os cursos e vinculando ao professor
+        var c1 = new Curso { Id = 101, Nome = "Física Quântica", ProfessorId = prof1.Id, Professor = prof1 };
+        var c2 = new Curso { Id = 102, Nome = "Termodinâmica", ProfessorId = prof1.Id, Professor = prof1 };
+
+        // Adicionando os cursos na lista do professor
+        prof1.Cursos.Add(c1);
+        prof1.Cursos.Add(c2);
+
+        service.CadastrarProfessor(prof1);
+
+        // 2. Listar simulando o "Include"
+        Console.WriteLine("=== Relatório de Professores e seus Cursos ===");
+        var lista = service.ListarProfessoresComCursos();
+
+        foreach (var prof in lista)
+        {
+            Console.WriteLine($"Professor: {prof.Nome}");
+            
+            if (prof.Cursos.Any())
+            {
+                foreach (var curso in prof.Cursos)
+                {
+                    Console.WriteLine($"  -> Curso: {curso.Nome} (ID: {curso.Id})");
+                }
+            }
+            else
+            {
+                Console.WriteLine("  -> Nenhum curso vinculado.");
+            }
+            Console.WriteLine();
+        }
     }
+}
