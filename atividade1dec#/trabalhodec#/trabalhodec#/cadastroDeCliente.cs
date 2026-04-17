@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// --- MODELO ---
 public class Cliente
 {
     public int Id { get; set; }
@@ -10,15 +9,12 @@ public class Cliente
     public string Email { get; set; }
 }
 
-// --- SERVIÇO (CRUD + VALIDAÇÃO) ---
 public class ClienteService
 {
     private List<Cliente> _clientes = new List<Cliente>();
 
-    // TAREFA: Implementar CRUD com Validação de Email
     public void Criar(Cliente cliente)
     {
-        // TAREFA: Validar email antes de salvar
         if (string.IsNullOrWhiteSpace(cliente.Email) || !cliente.Email.Contains("@"))
         {
             Console.WriteLine($"[ERRO] Falha ao cadastrar {cliente.Nome}: E-mail inválido.");
@@ -51,26 +47,22 @@ public class ClienteService
     }
 }
 
-// --- EXECUÇÃO (MAIN) ---
 class Program
 {
     static void Main()
     {
         var service = new ClienteService();
 
-        // Testando inserções
         service.Criar(new Cliente { Id = 1, Nome = "Alice", Email = "alice@tech.com" });
         service.Criar(new Cliente { Id = 2, Nome = "Bob", Email = "bob_sem_arroba.com" }); // Deve falhar
         service.Criar(new Cliente { Id = 3, Nome = "Charlie", Email = "charlie@dev.com" });
 
-        // TAREFA: Listar Clientes
         Console.WriteLine("\n--- Lista de Clientes Ativos ---");
         foreach (var c in service.ListarTodos())
         {
             Console.WriteLine($"ID: {c.Id} | Nome: {c.Nome} | Email: {c.Email}");
         }
 
-        // DESAFIO: Buscar por Email
         Console.WriteLine("\n--- Teste de Busca (Desafio) ---");
         string emailBusca = "charlie@dev.com";
         var encontrado = service.BuscarPorEmail(emailBusca);
