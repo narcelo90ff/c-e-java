@@ -12,8 +12,6 @@ return _context.Estudantes.ToList();
 }
 public Estudante BuscarPorId(int id)
 {
-// Usa FirstOrDefault para evitar exceção caso não exista registro.
-// Retorna null se não encontrar → mais seguro para tratamento.
 return _context.Estudantes.FirstOrDefault(e => e.Id == id);
 }
 public void Atualizar(Estudante estudante)
