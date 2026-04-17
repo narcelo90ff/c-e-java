@@ -39,8 +39,8 @@
             Console.WriteLine("\n=== ATIVIDADE 4: ESTOQUE ===");
             var estoque = new EstoqueService();
             estoque.Inserir(new ItemEstoque { Id = 1, Nome = "Caneta", Quantidade = 10 });
-            estoque.BaixaEstoque(1, 5); // Baixa normal
-            estoque.BaixaEstoque(1, 10); // Desafio: Impedir negativo
+            estoque.BaixaEstoque(1, 5); 
+            estoque.BaixaEstoque(1, 10); 
             Console.WriteLine($"Itens com estoque baixo (< 10): {estoque.ListarEstoqueBaixo(10).Count} item(ns)");
 
 
