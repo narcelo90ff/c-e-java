@@ -8,7 +8,6 @@ public class Program
 {
 public static void Main(string[] args)
 {
-// Instância do repositório (sem DI para simplificar)
 var repo = new EstudanteRepository();
 Console.WriteLine("=== INSERINDO ESTUDANTE ===");
 var novoEstudante = new Estudante
