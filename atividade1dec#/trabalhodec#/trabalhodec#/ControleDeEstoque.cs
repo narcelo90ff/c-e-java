@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// --- MODELO ---
 public class ItemEstoque
 {
     public int Id { get; set; }
@@ -10,19 +9,15 @@ public class ItemEstoque
     public int Quantidade { get; set; }
 }
 
-// --- SERVIÇO DE ESTOQUE ---
 public class EstoqueService
 {
     private List<ItemEstoque> _estoque = new List<ItemEstoque>();
 
-    // TAREFA: Inserir itens
     public void AdicionarItem(ItemEstoque item)
     {
         _estoque.Add(item);
     }
 
-    // TAREFA: Criar método de baixa de estoque
-    // DESAFIO: Impedir estoque negativo
     public void DarBaixa(int id, int quantidadeParaRetirar)
     {
         var item = _estoque.FirstOrDefault(i => i.Id == id);
@@ -44,7 +39,6 @@ public class EstoqueService
         }
     }
 
-    // TAREFA: Listar estoque baixo (ex: itens com menos de 5 unidades)
     public List<ItemEstoque> ListarEstoqueBaixo(int limite)
     {
         return _estoque.Where(i => i.Quantidade < limite).ToList();
@@ -60,17 +54,14 @@ class Program
     {
         var service = new EstoqueService();
 
-        // 1. Inserindo itens
         service.AdicionarItem(new ItemEstoque { Id = 1, Nome = "Caderno", Quantidade = 15 });
         service.AdicionarItem(new ItemEstoque { Id = 2, Nome = "Lápis", Quantidade = 3 });
         service.AdicionarItem(new ItemEstoque { Id = 3, Nome = "Borracha", Quantidade = 20 });
 
-        // 2. Testando baixa de estoque e o DESAFIO (impedir negativo)
         Console.WriteLine("--- Movimentação de Estoque ---");
         service.DarBaixa(1, 5);  // Deve funcionar (sobra 10)
         service.DarBaixa(2, 10); // Deve ser bloqueado (só tem 3)
 
-        // 3. Listar estoque baixo
         Console.WriteLine("\n--- Relatório: Estoque Baixo (Limite: 5) ---");
         var baixoEstoque = service.ListarEstoqueBaixo(5);
         
