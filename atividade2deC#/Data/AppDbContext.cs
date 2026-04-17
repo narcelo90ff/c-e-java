@@ -13,7 +13,6 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configura o relacionamento 1:N explicitamente
         modelBuilder.Entity<Curso>()
             .HasOne(c => c.Professor)
             .WithMany(p => p.Cursos)
