@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// --- MODELOS ---
 public class Professor
 {
     public int Id { get; set; }
@@ -20,46 +19,37 @@ public class Curso
     public Professor Professor { get; set; }
 }
 
-// --- SERVIÇO / LÓGICA ---
 public class InstituicaoService
 {
     private List<Professor> _professores = new List<Professor>();
 
-    // TAREFA: Inserir professor com cursos
     public void CadastrarProfessor(Professor prof)
     {
         _professores.Add(prof);
     }
 
-    // TAREFA: Listar com Include (Simulação)
-    // Retornamos a lista onde os objetos internos já estão relacionados
     public List<Professor> ListarProfessoresComCursos()
     {
         return _professores;
     }
 }
 
-// --- EXECUÇÃO (MAIN) ---
 class Program
 {
     static void Main()
     {
         var service = new InstituicaoService();
 
-        // 1. Configurar relacionamento e Inserir
         var prof1 = new Professor { Id = 1, Nome = "Dr. Hans Chucrute" };
         
-        // Criando os cursos e vinculando ao professor
         var c1 = new Curso { Id = 101, Nome = "Física Quântica", ProfessorId = prof1.Id, Professor = prof1 };
         var c2 = new Curso { Id = 102, Nome = "Termodinâmica", ProfessorId = prof1.Id, Professor = prof1 };
 
-        // Adicionando os cursos na lista do professor
         prof1.Cursos.Add(c1);
         prof1.Cursos.Add(c2);
 
         service.CadastrarProfessor(prof1);
 
-        // 2. Listar simulando o "Include"
         Console.WriteLine("=== Relatório de Professores e seus Cursos ===");
         var lista = service.ListarProfessoresComCursos();
 
