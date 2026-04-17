@@ -4,11 +4,8 @@ using ProjetoProfessorCurso.Models;
 
 using var context = new AppDbContext();
 
-// Garante que o banco existe (alternativa à migration manual)
 context.Database.EnsureCreated();
 
-// ── INSERÇÃO ──────────────────────────────────────────────
-// Evita duplicatas em execuções repetidas
 if (!context.Professores.Any())
 {
     var professor = new Professor
@@ -27,7 +24,6 @@ if (!context.Professores.Any())
     Console.WriteLine("✅ Professor e cursos inseridos com sucesso!\n");
 }
 
-// ── CONSULTA COM INCLUDE ──────────────────────────────────
 var professores = context.Professores
     .Include(p => p.Cursos)
     .AsNoTracking()       // ✅ melhor performance para leitura
