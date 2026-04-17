@@ -5,7 +5,6 @@ using ProjetoPedidos.Models;
 using var context = new AppDbContext();
 context.Database.EnsureCreated();
 
-// ── INSERÇÃO ──────────────────────────────────────────────
 if (!context.Pedidos.Any())
 {
     var pedido = new Pedido
@@ -25,13 +24,11 @@ if (!context.Pedidos.Any())
     Console.WriteLine("✅ Pedido inserido com sucesso!\n");
 }
 
-// ── CONSULTA COM INCLUDE ──────────────────────────────────
 var pedidos = context.Pedidos
     .Include(p => p.Itens)
     .AsNoTracking()
     .ToList();
 
-// ── EXIBIÇÃO E CÁLCULOS ───────────────────────────────────
 foreach (var pedido in pedidos)
 {
     Console.WriteLine($"🛒 Pedido #{pedido.Id}  |  Data: {pedido.Data:dd/MM/yyyy HH:mm}");
@@ -46,7 +43,6 @@ foreach (var pedido in pedidos)
 
     Console.WriteLine(new string('─', 50));
 
-    // ✅ Cálculos via propriedade calculada do modelo
     Console.WriteLine($"{"Total de itens:",-30} {pedido.TotalItens,5}");
     Console.WriteLine($"{"Valor total:",-30} {pedido.ValorTotal,12:C}");
     Console.WriteLine();
