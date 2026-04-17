@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// --- MODELO ---
 public class Curso
 {
     public int Id { get; set; }
@@ -10,21 +9,17 @@ public class Curso
     public int CargaHoraria { get; set; }
 }
 
-// --- SERVIÇO / LÓGICA ---
 public class CursoService
 {
     private List<Curso> _cursos = new List<Curso>();
 
-    // TAREFA: Inserir cursos
     public void Adicionar(Curso curso) => _cursos.Add(curso);
 
-    // TAREFA: Filtrar por carga horária (Exemplo: cursos com mais de 40h)
     public List<Curso> FiltrarPorCargaHoraria(int minima)
     {
         return _cursos.Where(c => c.CargaHoraria >= minima).ToList();
     }
 
-    // TAREFA: Ordenar por nome
     public List<Curso> ListarOrdenadoPorNome()
     {
         return _cursos.OrderBy(c => c.Nome).ToList();
@@ -33,21 +28,18 @@ public class CursoService
     public List<Curso> ListarTodos() => _cursos;
 }
 
-// --- EXECUÇÃO (MAIN) ---
 class Program
 {
     static void Main()
     {
         var service = new CursoService();
 
-        // TAREFA: Inserir 5 cursos
         service.Adicionar(new Curso { Id = 1, Nome = "Desenvolvimento C#", CargaHoraria = 80 });
         service.Adicionar(new Curso { Id = 2, Nome = "Banco de Dados SQL", CargaHoraria = 40 });
         service.Adicionar(new Curso { Id = 3, Nome = "Lógica de Programação", CargaHoraria = 20 });
         service.Adicionar(new Curso { Id = 4, Nome = "Arquitetura de Sistemas", CargaHoraria = 60 });
         service.Adicionar(new Curso { Id = 5, Nome = "UI/UX Design", CargaHoraria = 30 });
 
-        // TAREFA: Ordenar por nome e exibir
         Console.WriteLine("--- Todos os Cursos (Ordenados por Nome) ---");
         var ordenados = service.ListarOrdenadoPorNome();
         foreach (var c in ordenados)
@@ -55,7 +47,6 @@ class Program
             Console.WriteLine($"ID: {c.Id} | Nome: {c.Nome} | Carga: {c.CargaHoraria}h");
         }
 
-        // TAREFA: Filtrar por carga horária (ex: >= 40h)
         Console.WriteLine("\n--- Cursos com Carga Horária >= 40h ---");
         var filtrados = service.FiltrarPorCargaHoraria(40);
         foreach (var c in filtrados)
