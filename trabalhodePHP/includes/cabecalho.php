@@ -1,9 +1,5 @@
 <?php
-/**
- * cabecalho.php
- * Cabeçalho e navbar compartilhados entre todas as páginas protegidas.
- * Incluído via require_once em cada página.
- */
+
 $pagina_atual = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
@@ -13,7 +9,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyWallet — <?= htmlspecialchars($titulo_pagina ?? 'Sistema') ?></title>
     <style>
-        /* ── RESET & BASE ──────────────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
@@ -25,7 +20,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
             font-size: 14px;
         }
 
-        /* ── NAVBAR ────────────────────────────────────────────── */
         .navbar {
             background: #1a1a2e;
             height: 50px;
@@ -82,14 +76,12 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         }
         .btn-sair:hover { background: #c53030; }
 
-        /* ── LAYOUT ─────────────────────────────────────────────── */
         .container {
             max-width: 1060px;
             margin: 0 auto;
             padding: 28px 20px;
         }
 
-        /* ── CARDS DE RESUMO ────────────────────────────────────── */
         .resumo-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -131,7 +123,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         .resumo-card.despesas-card .resumo-valor { color: #dc2626; }
         .resumo-card.saldo-card    .resumo-valor { color: #fff; }
 
-        /* ── PANEL ──────────────────────────────────────────────── */
         .panel {
             background: #fff;
             border: 1px solid #e2e8f0;
@@ -149,7 +140,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
             border-bottom: 1px solid #f1f5f9;
         }
 
-        /* ── FORMULÁRIO INLINE ──────────────────────────────────── */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 160px 170px auto;
@@ -204,7 +194,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         }
         .btn-adicionar:hover { background: #2d2d4e; }
 
-        /* ── BOTÃO HISTÓRICO ─────────────────────────────────────── */
         .btn-historico-wrap { text-align: center; margin-top: 16px; }
 
         .btn-historico {
@@ -221,7 +210,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         }
         .btn-historico:hover { border-color: #3b5bdb; color: #3b5bdb; }
 
-        /* ── BOTÃO ZERAR ─────────────────────────────────────────── */
         .btn-zerar {
             background: #e53e3e;
             color: #fff;
@@ -238,7 +226,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         }
         .btn-zerar:hover { background: #c53030; }
 
-        /* ── BOTÃO VOLTAR ────────────────────────────────────────── */
         .btn-voltar {
             background: #fff;
             color: #374151;
@@ -253,7 +240,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         }
         .btn-voltar:hover { border-color: #3b5bdb; color: #3b5bdb; }
 
-        /* ── ALERTAS ─────────────────────────────────────────────── */
         .alert {
             padding: 10px 14px;
             border-radius: 6px;
@@ -274,7 +260,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
             color: #dc2626;
         }
 
-        /* ── TABELA ──────────────────────────────────────────────── */
         .table-wrap { overflow-x: auto; }
 
         table {
@@ -315,7 +300,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
             font-size: 0.83rem;
         }
 
-        /* ── BADGES ──────────────────────────────────────────────── */
         .badge {
             display: inline-block;
             padding: 3px 10px;
@@ -327,11 +311,9 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         .badge-receita { background: #dcfce7; color: #15803d; }
         .badge-despesa { background: #fee2e2; color: #dc2626; }
 
-        /* ── VALORES COLORIDOS ───────────────────────────────────── */
         .txt-receita { color: #16a34a; font-weight: 700; font-variant-numeric: tabular-nums; }
         .txt-despesa { color: #dc2626; font-weight: 700; font-variant-numeric: tabular-nums; }
 
-        /* ── BOTÃO DELETAR ───────────────────────────────────────── */
         .btn-del {
             background: none;
             border: none;
@@ -348,7 +330,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         }
         .btn-del:hover { background: #fee2e2; }
 
-        /* ── EMPTY STATE ─────────────────────────────────────────── */
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;
@@ -358,7 +339,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
         .empty-state p { font-size: 0.9rem; margin-bottom: 12px; }
         .empty-state a { color: #3b5bdb; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
 
-        /* ── RESPONSIVO ──────────────────────────────────────────── */
         @media (max-width: 700px) {
             .resumo-grid   { grid-template-columns: 1fr; }
             .form-row      { grid-template-columns: 1fr; }
@@ -369,7 +349,6 @@ $pagina_atual = basename($_SERVER['PHP_SELF']);
 
 <nav class="navbar">
     <a href="../pagina/index.php" class="navbar-brand">
-        <!-- Ícone carteira igual ao da imagem -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="5" width="20" height="14" rx="2"/>
