@@ -1,15 +1,9 @@
 <?php
-/**
- * Login.php
- * Página de autenticação com formulário POST.
- * Valida usuário e senha fixos usando password_verify().
- * Se válido, inicia a sessão e redireciona para o dashboard.
- */
+
 
 require_once(__DIR__ . '/../despesas/config.php');
 require_once(__DIR__ . '/../protetor_pagina/funcoes.php');
 
-// Se já estiver autenticado, vai direto ao dashboard
 if (isset($_SESSION['logado']) && $_SESSION['logado'] === true) {
     header('Location: index.php');
     exit;
@@ -17,7 +11,6 @@ if (isset($_SESSION['logado']) && $_SESSION['logado'] === true) {
 
 $erro = '';
 
-// ── Processa formulário POST ───────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['usuario'] ?? '');
     $senha   = trim($_POST['senha']   ?? '');
@@ -25,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($usuario) || empty($senha)) {
         $erro = 'Preencha todos os campos.';
     } elseif ($usuario === USUARIO_FIXO && password_verify($senha, SENHA_HASH)) {
-        // ✅ password_verify() confirma que a senha bate com o hash
         $_SESSION['logado']  = true;
         $_SESSION['usuario'] = $usuario;
         header('Location: index.php');
@@ -49,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Gradiente roxo da imagem */
             background: linear-gradient(135deg, #667eea 0%, #7c5cbf 50%, #9b6dce 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
@@ -69,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Topo escuro com logo ── */
         .card-header {
             background: #1a1a2e;
             padding: 2rem 2rem 1.8rem;
@@ -95,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             letter-spacing: 0.01em;
         }
 
-        /* ── Corpo branco com formulário ── */
         .card-body { padding: 1.8rem 2rem 1.5rem; }
 
         .alert-error {
@@ -191,7 +180,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="login-card">
 
-    <!-- Topo escuro -->
     <div class="card-header">
         <div class="wallet-svg">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
@@ -205,7 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>Gestão Financeira Pessoal</p>
     </div>
 
-    <!-- Corpo branco -->
     <div class="card-body">
 
         <?php if ($erro): ?>
