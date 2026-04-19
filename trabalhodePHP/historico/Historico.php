@@ -1,21 +1,11 @@
 <?php
-/**
- * Historico.php
- * Página de histórico de movimentações.
- *
- * Utiliza foreach para percorrer o array da $_SESSION e listar todas as operações.
- * Cada linha exibe: data, nome, tipo (badge), valor, impacto no saldo e % de despesas (bônus).
- *
- * Protegida por sessão — redireciona para login se não autenticado.
- */
+
 
 require_once(__DIR__ . '/../despesas/config.php');
 require_once(__DIR__ . '/../protetor_pagina/funcoes.php');
 
-// ── Controle de Acesso ─────────────────────────────────────────────────────
 proteger_pagina();
 
-// ── Deletar transação individual via POST ──────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletar_id'])) {
     $id = htmlspecialchars(trim($_POST['deletar_id']));
     $_SESSION['transacoes'] = array_values(
@@ -25,16 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletar_id'])) {
     exit;
 }
 
-// ── Limpar Histórico (Gestão de Dados) ────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['zerar'])) {
     $_SESSION['transacoes'] = [];
     header('Location: Historico.php');
     exit;
 }
 
-// ── Recupera e ordena do mais recente para o mais antigo ──────────────────
 $transacoes_raw  = $_SESSION['transacoes'];
-$transacoes      = array_reverse($transacoes_raw);   // foreach do mais novo ao mais antigo
+$transacoes      = array_reverse($transacoes_raw);   
 $total_despesas  = calcular_total_despesas($transacoes_raw);
 $total_receitas  = calcular_total_receitas($transacoes_raw);
 $saldo_periodo   = calcular_saldo($transacoes_raw);
@@ -48,7 +36,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
 
         <div class="panel">
 
-            <!-- ── Cabeçalho da seção ── -->
             <div style="display:flex; justify-content:space-between; align-items:center;
                         flex-wrap:wrap; gap:10px; margin-bottom:16px;">
                 <h1 style="font-size:1rem; font-weight:700; color:#1e293b;">
@@ -71,7 +58,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                 </div>
             </div>
 
-            <!-- ── Estado vazio ── -->
             <?php if (empty($transacoes)): ?>
 
                 <div class="empty-state">
@@ -82,7 +68,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
 
             <?php else: ?>
 
-                <!-- ── Tabela: foreach percorre o array da $_SESSION ── -->
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -97,11 +82,9 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                         <tbody>
                             <?php foreach ($transacoes as $t): ?>
                                 <?php
-                                    // Lógica de Cálculos: impacto no saldo (+ receita / – despesa)
                                     $impacto    = ($t['tipo'] === 'Receita')
                                                   ? $t['valor'] : -$t['valor'];
 
-                                    // BÔNUS: relevância percentual da despesa frente ao total
                                     $percentual = ($t['tipo'] === 'Despesa')
                                                   ? calcular_percentual_despesa($t['valor'], $total_despesas)
                                                   : null;
@@ -110,24 +93,20 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                                     $sinal      = ($t['tipo'] === 'Receita') ? '+' : '−';
                                 ?>
                                 <tr>
-                                    <!-- Data -->
                                     <td style="color:#94a3b8; font-size:0.78rem; white-space:nowrap;">
                                         <?= htmlspecialchars($t['data']) ?>
                                     </td>
 
-                                    <!-- Nome / Descrição -->
                                     <td style="font-weight:500; color:#1e293b;">
                                         <?= htmlspecialchars($t['nome']) ?>
                                     </td>
 
-                                    <!-- Tipo (badge colorido) -->
                                     <td>
                                         <span class="badge badge-<?= strtolower($t['tipo']) ?>">
                                             <?= $t['tipo'] ?>
                                         </span>
                                     </td>
 
-                                    <!-- Valor com sinal e impacto no saldo -->
                                     <td style="text-align:right;">
                                         <span class="<?= $cls_valor ?>">
                                             <?= $sinal ?> <?= formatar_moeda($t['valor']) ?>
@@ -140,7 +119,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                                         <?php endif; ?>
                                     </td>
 
-                                    <!-- Ações: deletar -->
                                     <td style="text-align:right;">
                                         <form method="POST"
                                               onsubmit="return confirm('Remover esta transação?')"
@@ -160,7 +138,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                             <?php endforeach; ?>
                         </tbody>
 
-                        <!-- ── Rodapé com totais ── -->
                         <tfoot>
                             <tr>
                                 <td colspan="2" style="color:#64748b; font-size:0.75rem;
