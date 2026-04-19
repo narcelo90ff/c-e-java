@@ -1,41 +1,26 @@
 <?php
-/**
- * index.php
- * Página principal — Dashboard Financeiro.
- *
- * Exibe o Saldo Total atual e um formulário para cadastrar novas transações
- * (Nome, Valor e Tipo: Receita ou Despesa).
- *
- * Cada transação enviada via POST é armazenada em um array dentro da $_SESSION.
- * Os dados são recuperados para atualizar o saldo e a listagem automaticamente.
- */
+
 
 require_once(__DIR__ . '/../despesas/config.php');
 require_once(__DIR__ . '/../protetor_pagina/funcoes.php');
 
-// ── Controle de Acesso: redireciona para login se não houver sessão ──
 proteger_pagina();
 
 $mensagem = '';
 $tipo_msg = '';
 
-// ── Processar formulário POST ──────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Gestão de Dados: zerar mês apaga todos os registros da sessão
     if (isset($_POST['zerar'])) {
         $_SESSION['transacoes'] = [];
         $mensagem = 'Histórico do mês zerado com sucesso.';
         $tipo_msg = 'success';
 
-    // Cadastro de nova transação
     } elseif (isset($_POST['nome'])) {
         $nome  = trim($_POST['nome']  ?? '');
-        // Aceita vírgula ou ponto como separador decimal
         $valor = str_replace(',', '.', trim($_POST['valor'] ?? ''));
         $tipo  = trim($_POST['tipo']  ?? '');
 
-        // Validações
         if (empty($nome)) {
             $mensagem = 'Informe a descrição da transação.';
             $tipo_msg = 'error';
@@ -46,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensagem = 'Selecione um tipo válido: Receita ou Despesa.';
             $tipo_msg = 'error';
         } else {
-            // Persistência com Sessões: armazena no array $_SESSION['transacoes']
             $_SESSION['transacoes'][] = [
                 'id'    => uniqid('tx_', true),
                 'nome'  => htmlspecialchars($nome, ENT_QUOTES, 'UTF-8'),
@@ -60,16 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ── Recupera dados da sessão e recalcula saldo ─────────────────────────────
 $transacoes     = $_SESSION['transacoes'];
-$saldo          = calcular_saldo($transacoes);         // adição e subtração
+$saldo          = calcular_saldo($transacoes);         
 $total_receitas = calcular_total_receitas($transacoes);
 $total_despesas = calcular_total_despesas($transacoes);
 
-// Define título para o cabecalho
 $titulo_pagina = 'Dashboard';
 
-// Inclui a navbar e o <head> via require_once
 require_once(__DIR__ . '/../includes/cabecalho.php');
 ?>
 
@@ -91,7 +72,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
         </div>
         <?php endif; ?>
 
-        <!-- ── Cards de resumo: Saldo Total recuperado da $_SESSION ── -->
         <div class="resumo-grid">
 
             <div class="resumo-card receitas-card">
@@ -111,28 +91,24 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
 
         </div>
 
-        <!-- ── Formulário de nova transação (POST → salvo na $_SESSION) ── -->
         <div class="panel">
             <div class="panel-title">Nova Transação</div>
 
             <form method="POST" action="index.php">
                 <div class="form-row">
 
-                    <!-- Nome / Descrição -->
                     <div class="field-group">
                         <label for="nome">Descrição</label>
                         <input type="text" id="nome" name="nome"
                                placeholder="Ex: Salário, Aluguel...">
                     </div>
 
-                    <!-- Valor -->
                     <div class="field-group">
                         <label for="valor">Valor</label>
                         <input type="number" id="valor" name="valor"
                                placeholder="0,00" step="0.01" min="0.01">
                     </div>
 
-                    <!-- Tipo: Receita ou Despesa -->
                     <div class="field-group">
                         <label for="tipo">Tipo</label>
                         <select id="tipo" name="tipo">
@@ -141,7 +117,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                         </select>
                     </div>
 
-                    <!-- Botão Adicionar -->
                     <div class="field-group">
                         <label>&nbsp;</label>
                         <button type="submit" class="btn-adicionar">Adicionar</button>
@@ -150,7 +125,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
                 </div>
             </form>
 
-            <!-- Link para histórico -->
             <div class="btn-historico-wrap">
                 <a href="../historico/Historico.php" class="btn-historico">
                     Ver Detalhes do Histórico
@@ -158,7 +132,6 @@ require_once(__DIR__ . '/../includes/cabecalho.php');
             </div>
         </div>
 
-        <!-- ── Botão Zerar Mês (Gestão de Dados) ── -->
         <?php if (!empty($transacoes)): ?>
         <div style="display:flex; justify-content:flex-end; margin-top:6px;">
             <form method="POST" action="index.php"
