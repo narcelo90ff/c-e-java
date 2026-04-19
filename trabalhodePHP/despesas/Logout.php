@@ -1,8 +1,5 @@
 <?php
-/**
- * Logout.php
- * Encerra a sessão ativa e redireciona para a tela de login.
- */
+
 
 require_once(__DIR__ . '/config.php');
 
